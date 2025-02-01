@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi amor ❤</title>
+    <style> 
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: black;
+        color: white;
+        font-size: 2rem;
+        font-family: Arial, sans-serif;
+        cursor: pointer;
+        text-align: center;
+    }
+    #overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+    }
+
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #heart {
+            color: red;
+            font-size: 50px;
+            cursor: pointer;
+            transition: transform 2s ease-in-out;
+            z-index: 2;
+        }
+        
+        .main-content {
+            display: none;
+            text-align: center;
+            color: white;
+            z-index: 3;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        #siBtn {
+            background-color: #ff4d8d;
+            color: white;
+        }
+        #noBtn {
+            background-color: #666;
+            color: white;
+        }
+        .star {
+            position: fixed;
+            background-color: white;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            animation: twinkle 1s infinite alternate;
+        }
+        .falling-heart {
+            position: fixed;
+            font-size: 20px;
+            animation: falling linear infinite;
+            z-index: 1;
+            top: -50px;
+        }
+        @keyframes falling {
+            from { 
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            to { 
+                transform: translateY(120vh) rotate(360deg);
+                opacity: 0.7;
+            }
+        }
+        @keyframes twinkle {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+        .firework {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        #name-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            font-size: 40px;
+            color: white;
+        }
+        .letter {
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+        .letter.bright {
+            opacity: 1;
+            text-shadow: 0 0 10px white, 0 0 20px white, 0 0 30px white;
+        }
+        @keyframes shoot {
+            0% { transform: translateY(100vh) scale(0.1); opacity: 1; }
+            50% { opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 0; }
+        }
+        @keyframes explode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+        #final-message {
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            z-index: 1000;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="overlay">Clickeame :)</div>
+
+    <audio id="backgroundMusic" loop>
+        <source src="walking-togheter-265885.mp3" type="audio/mp3">
+    </audio>
+    <audio id="fireworkSound">
+        <source src="fireworks-sound.mp3" type="audio/mp3">
+    </audio>
+
+    <div id="name-container">
+        <span class="letter">A</span>
+        <span class="letter">G</span>
+        <span class="letter">O</span>
+        <span class="letter">S</span>
+    </div>
+    <div id="heart">❤</div>
+    <div class="main-content">
+        <div class="question">Amor, ¿te gustaría pasar el 14 de febrero conmigo?</div>
+        <div class="buttons">
+            <button id="siBtn">Sí</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+
+const overlay = document.getElementById('overlay');
+
+        overlay.addEventListener('click', () => {
+            backgroundMusic.play().catch(error => console.log("Autoplay bloqueado:", error));
+            overlay.style.display = 'none';
+        });
+
+
+
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const fireworkSound = document.getElementById('fireworkSound');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            backgroundMusic.play().catch(e => console.log(e,"Audio no anda culia"));
+        });
+
+        const letters = document.querySelectorAll('.letter');
+        let currentLetter = 0;
+        
+        function animateLetters() {
+            letters.forEach(letter => letter.classList.remove('bright'));
+            letters[currentLetter].classList.add('bright');
+            currentLetter = (currentLetter + 1) % letters.length;
+        }
+        
+        setInterval(animateLetters, 500);
+
+        function createFallingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'falling-heart';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.color = `hsl(${Math.random() * 60 + 300}, 100%, 50%)`;
+            heart.style.animationDuration = 3 + Math.random() * 2 + 's';
+            heart.innerHTML = '❤';
+            document.body.appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        function createStar() {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.top = Math.random() * 100 + 'vh';
+            document.body.appendChild(star);
+        }
+
+        function playFireworkSound() {
+            const sound = fireworkSound.cloneNode();
+            sound.volume = 0.3;
+            sound.play().catch(e => console.log("Sound autoplay was prevented"));
+            setTimeout(() => sound.remove(), 1000);
+        }
+
+        function createFirework(x) {
+            const colors = ['#ff0000', '#ffd700', '#ff69b4', '#00ff00', '#ff4500', '#8a2be2', '#ff1493', '#00ffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const rocket = document.createElement('div');
+            rocket.className = 'firework';
+            rocket.style.left = x + 'px';
+            rocket.style.backgroundColor = color;
+            rocket.style.animation = 'shoot 1s forwards';
+            document.body.appendChild(rocket);
+            
+            setTimeout(() => {
+                rocket.remove();
+                playFireworkSound();
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'firework';
+                    particle.style.left = x + 'px';
+                    particle.style.top = (window.innerHeight / 2) + 'px';
+                    particle.style.backgroundColor = color;
+                    const angle = (i / 25) * Math.PI * 2;
+                    const distance = 100 + Math.random() * 50;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+                    particle.style.setProperty('--tx', `${tx}px`);
+                    particle.style.setProperty('--ty', `${ty}px`);
+                    particle.style.animation = 'explode 1.5s forwards';
+                    document.body.appendChild(particle);
+                    setTimeout(() => particle.remove(), 1500);
+                }
+            }, 1000);
+        }
+
+        function launchFireworks() {
+            for(let i = 0; i < 2; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    createFirework(x);
+                }, i * 300);
+            }
+        }
+
+        const heart = document.getElementById('heart');
+        const mainContent = document.querySelector('.main-content');
+        const siBtn = document.getElementById('siBtn');
+        const noBtn = document.getElementById('noBtn');
+        let scale = 1;
+        let heartInterval;
+
+        heart.addEventListener('click', () => {
+            backgroundMusic.play().catch(e => console.log(e,"Audio no anda culia"));
+
+            const zoomInterval = setInterval(() => {
+                scale += 1;
+                heart.style.transform = `scale(${scale})`;
+                if (scale >= 100) {
+                    clearInterval(zoomInterval);
+                    heart.style.display = 'none';
+                    document.getElementById('name-container').style.display = 'none';
+                    mainContent.style.display = 'block';
+                    heartInterval = setInterval(createFallingHeart, 50);
+                }
+            }, 50);
+        });
+
+        let noButtonScale = 1;
+        let siButtonScale = 1;
+
+        noBtn.addEventListener('click', () => {
+            noButtonScale *= 0.8;
+            siButtonScale *= 1.2;
+            noBtn.style.transform = `scale(${noButtonScale})`;
+            siBtn.style.transform = `scale(${siButtonScale})`;
+        });
+
+        siBtn.addEventListener('click', () => {
+            backgroundMusic.pause();
+            fireworkSound.loop = true;
+            fireworkSound.play();
+            mainContent.style.display = 'none';
+
+            const fullscreenImage = document.createElement('img');
+            fullscreenImage.src = 'gatito.jpg'; // Reemplaza con el nombre de tu archivo
+            fullscreenImage.style.position = 'fixed';
+            fullscreenImage.style.top = '0';
+            fullscreenImage.style.left = '0';
+            fullscreenImage.style.width = '100vw';
+            fullscreenImage.style.height = '100vh';
+            fullscreenImage.style.objectFit = 'cover';
+            fullscreenImage.style.zIndex = '9999';
+            document.body.appendChild(fullscreenImage);
+
+            document.body.style.backgroundColor = 'black';
+            
+            for(let i = 0; i < 200; i++) {
+                setTimeout(createStar, i * 20);
+            }
+            
+            clearInterval(heartInterval);
+            setInterval(launchFireworks, 800);
+            
+            setTimeout(() => {
+                fullscreenImage.remove();
+                const finalMessage = document.createElement('div');
+                finalMessage.id = 'final-message';
+                finalMessage.innerHTML = '💚Es una cita💙 ';
+                document.body.appendChild(finalMessage);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
